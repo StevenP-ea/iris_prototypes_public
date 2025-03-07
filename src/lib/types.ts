@@ -5,7 +5,6 @@ export interface CSVData {
 
 export interface PromptOption {
   id: string;
-  name: string;
   text: string;
   isActive: boolean;
 }
