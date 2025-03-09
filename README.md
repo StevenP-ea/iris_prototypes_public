@@ -1,50 +1,62 @@
-# Iris - CSV Data Summary Generator
+# Iris - CSV Data Summarizer
 
-Iris is a web application that helps you process CSV data and generate summaries using AI. It allows you to test multiple prompt variations and iterate on the generated summaries.
+Iris is a web application that helps users generate insightful summaries from CSV data using AI-powered analysis. The application provides an intuitive interface for uploading CSV files and creating customized summaries based on user prompts.
 
 ## Features
 
-- **CSV Data Upload**: Upload CSV files through a drag-and-drop interface
-- **Multi-prompt Testing**: Create and toggle multiple prompt variations
-- **Dual-panel Layout**: Left sidebar for prompt management, right panel for summary viewing/editing
-- **Summary Generation**: Generate summaries based on CSV data and selected prompts
-- **Editable Summaries**: Manually edit generated summaries and reset to original versions
+- **CSV Upload**: Easily upload and parse CSV files
+- **Custom Prompts**: Create, rename, and manage multiple prompts for different summary styles
+- **AI-Powered Summaries**: Generate in-depth analysis of CSV data using OpenAI's API
+- **Editable Results**: Modify and refine generated summaries
+- **Persistent Storage**: Automatically saves prompts and summaries to browser storage
+
+## Technology Stack
+
+- **Frontend**: Next.js 14 with React
+- **Styling**: Custom CSS with inline styles for component-specific design
+- **Data Processing**: Papa Parse for CSV handling
+- **AI Integration**: OpenAI API for generating summaries
+- **State Management**: React Hooks for local state management
 
 ## Getting Started
 
-### Prerequisites
+1. Clone the repository:
+   ```
+   git clone https://github.com/StevenP-ea/iris_prototypes_public.git
+   cd iris_prototypes_public
+   ```
 
-- Node.js (v16 or higher)
-- npm or yarn
-
-### Installation
-
-1. Clone the repository
 2. Install dependencies:
    ```
    npm install
    ```
-3. Start the development server:
+
+3. Create a `.env.local` file in the root directory with your OpenAI API key:
+   ```
+   OPENAI_API_KEY=your_api_key_here
+   ```
+
+4. Start the development server:
    ```
    npm run dev
    ```
-4. Open your browser and navigate to `http://localhost:3000`
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser to use the application.
 
 ## Usage
 
-1. Upload a CSV file using the file uploader.
-2. Once the CSV is processed, an initial summary will be generated automatically.
-3. Use the left sidebar to create and toggle different prompt variations.
-4. Click "Generate Summary" to apply selected prompts to the data.
-5. Edit the generated summary in the right panel if needed.
-6. Click "Reset" to revert to the original generated summary.
+1. Upload a CSV file by dragging and dropping it into the upload area or clicking to browse files
+2. Customize your prompts for generating summaries
+3. Click "Generate Summary" to analyze your data
+4. Edit and refine the generated summary as needed
 
-## Technologies Used
+## Project Structure
 
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
-- OpenAI API
-- PapaParse (for CSV parsing)
-- React Dropzone (for file uploads) 
+- `/src/app` - Next.js app router files including the main page
+- `/src/components` - React components (FileUploader, PromptPanel, SummaryPanel)
+- `/src/lib` - Utility functions and type definitions
+- `/public` - Static assets
+
+## License
+
+MIT 
