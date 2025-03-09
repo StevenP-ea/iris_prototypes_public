@@ -1,10 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import FileUploader from '@/components/FileUploader'
 import PromptPanel from '@/components/PromptPanel'
 import SummaryPanel from '@/components/SummaryPanel'
 import { CSVData } from '@/lib/types'
+
+// Helper function to safely check if we're in a browser context
+const isBrowser = () => typeof window !== 'undefined'
 
 export default function Home() {
   const [csvData, setCsvData] = useState<CSVData | null>(null)
@@ -12,6 +15,24 @@ export default function Home() {
   const [currentSummary, setCurrentSummary] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Load saved summary from localStorage if available
+  useEffect(() => {
+    if (isBrowser() && !csvData) {
+      try {
+        const savedCsvData = localStorage.getItem('iris-csv-data')
+        const savedSummary = localStorage.getItem('iris-summary')
+        
+        if (savedCsvData && savedSummary) {
+          setCsvData(JSON.parse(savedCsvData))
+          setInitialSummary(savedSummary)
+          setCurrentSummary(savedSummary)
+        }
+      } catch (error) {
+        console.error('Failed to load saved data:', error)
+      }
+    }
+  }, [csvData])
 
   const handleCsvUpload = async (data: CSVData) => {
     setCsvData(data)
@@ -23,6 +44,16 @@ export default function Home() {
       const summary = await generateSummary(data, [])
       setInitialSummary(summary)
       setCurrentSummary(summary)
+      
+      // Save to localStorage
+      if (isBrowser()) {
+        try {
+          localStorage.setItem('iris-csv-data', JSON.stringify(data))
+          localStorage.setItem('iris-summary', summary)
+        } catch (error) {
+          console.error('Failed to save data:', error)
+        }
+      }
     } catch (err: any) {
       setError('Failed to generate summary. Please try again.')
       console.error(err)
@@ -70,35 +101,6 @@ export default function Home() {
 
       const result = await response.json();
       return result.summary;
-      
-      // Keep the mock implementation as a fallback (commented out)
-      /*
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const headers = data.headers.join(', ')
-          let summaryText = `This is a summary of the CSV data with ${data.rows.length} rows and columns: ${headers}.\n\n`;
-          
-          // Add a sample of the data
-          summaryText += `Sample data preview (first 5 rows):\n`;
-          for (let i = 0; i < Math.min(5, data.rows.length); i++) {
-            summaryText += `Row ${i + 1}: ${data.rows[i].join(', ')}\n`;
-          }
-          
-          summaryText += `\nData Analysis:\n`;
-          summaryText += `- This dataset contains information about ${headers.toLowerCase()}.\n`;
-          summaryText += `- There are ${data.rows.length} records in total.\n`;
-          
-          if (prompts.length > 0) {
-            summaryText += `\nPrompt-specific insights:\n`;
-            prompts.forEach((prompt, index) => {
-              summaryText += `- Based on prompt "${prompt}": This would require further analysis of the data patterns.\n`;
-            });
-          }
-          
-          return resolve(summaryText);
-        }, 1500);
-      });
-      */
     } catch (error) {
       console.error('Error generating summary:', error);
       throw new Error('Failed to generate summary');
@@ -106,57 +108,235 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      {/* Header with logo and title */}
-      <header className="bg-white border-b border-gray-200 py-3 px-6">
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center mr-3">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#f9fafb' }}>
+      {/* Header */}
+      <header style={{ 
+        background: 'white', 
+        borderBottom: '1px solid #e5e7eb', 
+        padding: '1rem 1.5rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ 
+            width: '1.5rem', 
+            height: '1.5rem', 
+            borderRadius: '9999px', 
+            background: '#3b82f6', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            marginRight: '0.75rem' 
+          }}>
+            <svg style={{ width: '0.75rem', height: '0.75rem', color: 'white' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
-          <h1 className="text-xl font-medium text-gray-800">Iris CSV Analyzer</h1>
+          <h1 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1f2937' }}>Iris Summary Prototype</h1>
         </div>
       </header>
       
-      {/* Main content area */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left panel - Summary */}
-        <div className="w-1/2 flex flex-col border-r border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200 bg-white">
-            <h2 className="text-sm font-medium text-gray-700 uppercase tracking-wide">Summary</h2>
-          </div>
+      {/* Main content - 2 column layout */}
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        {/* Left Panel - Summary */}
+        <div style={{ 
+          width: '66.666667%', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          padding: '1.5rem', 
+          overflowY: 'auto', 
+          borderRight: '1px solid #e5e7eb'
+        }}>
+          <h2 style={{ 
+            fontSize: '0.875rem', 
+            fontWeight: 500, 
+            textTransform: 'uppercase', 
+            letterSpacing: '0.025em', 
+            color: '#4b5563', 
+            marginBottom: '1rem' 
+          }}>
+            Summary
+          </h2>
+          <SummaryPanel 
+            summary={currentSummary}
+            onChange={setCurrentSummary}
+            onReset={resetSummary}
+            isLoading={isLoading}
+            error={error}
+          />
           
-          <div className="flex-1 overflow-auto p-5">
-            <SummaryPanel 
-              summary={currentSummary}
-              onChange={setCurrentSummary}
-              onReset={resetSummary}
-              isLoading={isLoading}
-              error={error}
-            />
-          </div>
+          {/* Placeholder for future visualizations */}
+          {csvData && currentSummary && !isLoading && (
+            <div style={{ 
+              marginTop: '1.5rem', 
+              border: '1px solid #e5e7eb', 
+              borderRadius: '0.375rem', 
+              background: 'white', 
+              padding: '1rem' 
+            }}>
+              <h3 style={{ fontSize: '0.875rem', fontWeight: 500, color: '#4b5563', marginBottom: '0.75rem' }}>
+                Data Preview
+              </h3>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+                  <thead style={{ background: '#f9fafb' }}>
+                    <tr>
+                      {csvData.headers.slice(0, 5).map((header, index) => (
+                        <th 
+                          key={index}
+                          style={{ 
+                            padding: '0.5rem 0.75rem', 
+                            textAlign: 'left', 
+                            fontSize: '0.75rem', 
+                            fontWeight: 500,
+                            color: '#6b7280',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.025em',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}
+                        >
+                          {header}
+                        </th>
+                      ))}
+                      {csvData.headers.length > 5 && (
+                        <th style={{ 
+                          padding: '0.5rem 0.75rem', 
+                          textAlign: 'left', 
+                          fontSize: '0.75rem', 
+                          fontWeight: 500,
+                          color: '#6b7280',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.025em',
+                          borderBottom: '1px solid #e5e7eb'
+                        }}>
+                          ...
+                        </th>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {csvData.rows.slice(0, 5).map((row, rowIndex) => (
+                      <tr key={rowIndex} style={{ background: rowIndex % 2 === 0 ? 'white' : '#f9fafb' }}>
+                        {row.slice(0, 5).map((cell, cellIndex) => (
+                          <td 
+                            key={cellIndex} 
+                            style={{ 
+                              padding: '0.5rem 0.75rem', 
+                              fontSize: '0.875rem', 
+                              color: '#6b7280', 
+                              maxWidth: '16rem',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              borderBottom: '1px solid #e5e7eb'
+                            }}
+                          >
+                            {cell}
+                          </td>
+                        ))}
+                        {row.length > 5 && (
+                          <td style={{ 
+                            padding: '0.5rem 0.75rem', 
+                            fontSize: '0.875rem', 
+                            color: '#6b7280',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>...</td>
+                        )}
+                      </tr>
+                    ))}
+                    {csvData.rows.length > 5 && (
+                      <tr>
+                        <td 
+                          colSpan={Math.min(6, csvData.headers.length)} 
+                          style={{ 
+                            padding: '0.5rem 0.75rem', 
+                            fontSize: '0.875rem', 
+                            color: '#6b7280', 
+                            textAlign: 'center',
+                            fontStyle: 'italic',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}
+                        >
+                          {csvData.rows.length - 5} more rows
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
         
-        {/* Right panel - File uploader and prompts */}
-        <div className="w-1/2 flex flex-col">
-          <div className="px-6 py-4 border-b border-gray-200 bg-white">
-            <h2 className="text-sm font-medium text-gray-700 uppercase tracking-wide">
-              {csvData ? 'Test Prompts' : 'Upload CSV'}
+        {/* Right Panel - Upload & Prompts */}
+        <div style={{ 
+          width: '33.333333%', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          background: '#f3f4f6', 
+          borderLeft: '1px solid #e5e7eb', 
+          overflowY: 'auto' 
+        }}>
+          <div style={{ padding: '1.5rem' }}>
+            <h2 style={{ 
+              fontSize: '0.875rem', 
+              fontWeight: 500, 
+              textTransform: 'uppercase', 
+              letterSpacing: '0.025em', 
+              color: '#4b5563', 
+              marginBottom: '1rem' 
+            }}>
+              Upload CSV
             </h2>
-          </div>
-          
-          <div className="flex-1 overflow-auto p-5">
             {!csvData ? (
-              <div className="h-full flex items-center justify-center">
-                <div className="max-w-md w-full">
-                  <FileUploader onUpload={handleCsvUpload} />
+              <FileUploader onUpload={handleCsvUpload} />
+            ) : (
+              <div style={{ 
+                marginBottom: '1.5rem', 
+                background: 'white', 
+                borderRadius: '0.375rem', 
+                border: '1px solid #e5e7eb', 
+                padding: '1rem' 
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div>
+                    <div style={{ fontSize: '0.875rem', fontWeight: 500, color: '#4b5563' }}>CSV Uploaded</div>
+                    <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+                      {csvData.rows.length} rows × {csvData.headers.length} columns
+                    </div>
+                  </div>
+                  <button 
+                    className="iris-button-secondary"
+                    style={{ 
+                      fontSize: '0.75rem', 
+                      padding: '0.25rem 0.5rem' 
+                    }}
+                    onClick={() => {
+                      setCsvData(null);
+                      setInitialSummary('');
+                      setCurrentSummary('');
+                    }}
+                  >
+                    Replace
+                  </button>
                 </div>
               </div>
-            ) : (
-              <PromptPanel onSubmit={handlePromptSubmit} isLoading={isLoading} />
             )}
           </div>
+          
+          {csvData && (
+            <div style={{ padding: '1.5rem', paddingTop: 0 }}>
+              <h2 style={{ 
+                fontSize: '0.875rem', 
+                fontWeight: 500, 
+                textTransform: 'uppercase', 
+                letterSpacing: '0.025em', 
+                color: '#4b5563', 
+                marginBottom: '1rem' 
+              }}>
+                Prompts
+              </h2>
+              <PromptPanel onSubmit={handlePromptSubmit} isLoading={isLoading} />
+            </div>
+          )}
         </div>
       </div>
     </div>

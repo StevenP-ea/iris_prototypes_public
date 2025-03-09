@@ -1,0 +1,2 @@
+# To push to GitHub, use:
+# GITHUB_TOKEN=your_token_here git push -u origin main

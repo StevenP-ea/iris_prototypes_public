@@ -7,6 +7,7 @@ export interface PromptOption {
   id: string;
   text: string;
   isActive: boolean;
+  name: string;
 }
 
 export interface SummaryPanelProps {

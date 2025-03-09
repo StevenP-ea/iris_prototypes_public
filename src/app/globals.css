@@ -5,19 +5,57 @@
 :root {
   --foreground-rgb: 51, 51, 51;
   --background-rgb: 249, 250, 251;
-  --primary-color: 37, 99, 235;
-  --primary-color-darker: 29, 78, 216;
+  --primary-color: 59, 130, 246;
+  --secondary-color: 236, 240, 244;
+  --text-primary: 31, 41, 55;
+  --text-secondary: 107, 114, 128;
+  --border-color: 229, 231, 235;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
+  color: rgb(var(--text-primary));
   background: rgb(var(--background-rgb));
   height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, 
     "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
 }
 
-/* Focus styles like cursor.ai */
+/* Add spin animation for loading indicators */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Clean typography styles - without @apply */
+h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.panel-heading {
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  color: rgb(75, 85, 99);
+  margin-bottom: 1rem;
+}
+
+/* Focus styles */
 *:focus {
   outline: none;
 }
@@ -26,4 +64,103 @@ body {
 .font-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", 
     "Courier New", monospace;
+}
+
+/* Iris specific components - without @apply */
+.iris-button-primary {
+  padding: 0.5rem 1rem;
+  background-color: rgb(59, 130, 246);
+  color: white;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  transition-property: color, background-color, border-color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.iris-button-primary:hover {
+  background-color: rgb(37, 99, 235);
+}
+
+.iris-button-primary:focus {
+  outline: none;
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-width: 2px;
+}
+
+.iris-button-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.iris-button-secondary {
+  padding: 0.375rem 0.75rem;
+  background-color: white;
+  color: rgb(55, 65, 81);
+  font-weight: 500;
+  border-radius: 0.375rem;
+  border: 1px solid rgb(209, 213, 219);
+  transition-property: color, background-color, border-color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.iris-button-secondary:hover {
+  background-color: rgb(249, 250, 251);
+}
+
+.iris-button-secondary:focus {
+  outline: none;
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-width: 2px;
+}
+
+.iris-button-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.iris-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.iris-input:focus {
+  outline: none;
+  border-color: rgb(59, 130, 246);
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+}
+
+.iris-textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", 
+    "Courier New", monospace;
+  font-size: 0.875rem;
+}
+
+.iris-textarea:focus {
+  outline: none;
+  border-color: rgb(59, 130, 246);
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
 } 
