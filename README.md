@@ -9,6 +9,7 @@ Iris is a web application that helps users generate insightful summaries from CS
 - **AI-Powered Summaries**: Generate in-depth analysis of CSV data using OpenAI's API
 - **Editable Results**: Modify and refine generated summaries
 - **Persistent Storage**: Automatically saves prompts and summaries to browser storage
+- **Modern UI**: Clean, responsive interface with intuitive controls
 
 ## Technology Stack
 
